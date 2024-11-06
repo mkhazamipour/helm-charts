@@ -3,7 +3,7 @@ entries:
   stackrox-central-services:
   - apiVersion: v2
     appVersion: 4.5.4
-    created: "2024-11-06T12:30:06.964752783+01:00"
+    created: "2024-11-06T12:32:17.162887342+01:00"
     description: Helm Chart for StackRox Central Service
     digest: d3ce25323ff9c3f0de49cc18cea398d58c6aefc1e71dffa754523253cd94347b
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -12,4 +12,4 @@ entries:
     urls:
     - https://mkhazamipour.github.io/helm-charts/stackrox-central-services-400.5.4.tgz
     version: 400.5.4
-generated: "2024-11-06T12:30:06.959892983+01:00"
+generated: "2024-11-06T12:32:17.158093842+01:00"
