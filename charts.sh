@@ -45,23 +45,27 @@ cat > $HTML_FILE <<EOL
         </tr>
 EOL
 
-# Read chart information from index.yaml and populate the table
-yq '.entries.* | .[]' $DOCS_DIR/index.yaml | while read -r entry; do
-    name=$(echo "$entry" | yq '.name')
-    version=$(echo "$entry" | yq '.version')
-    description=$(echo "$entry" | yq '.description // "No description available"')
-    url=$(echo "$entry" | yq '.urls[0]')
-    
-    # Only add entry if we have valid name and version
-    if [[ -n "$name" && "$name" != "null" && -n "$version" && "$version" != "null" ]]; then
-        cat >> $HTML_FILE <<EOL
+# Read chart information directly from tgz files in docs directory
+for chart_file in $DOCS_DIR/*.tgz; do
+    if [ -f "$chart_file" ]; then
+        # Get filename without path
+        filename=$(basename "$chart_file")
+        # Extract chart info using helm
+        chart_info=$(helm show chart "$chart_file" 2>/dev/null)
+        name=$(echo "$chart_info" | grep '^name:' | cut -d':' -f2- | tr -d ' ')
+        version=$(echo "$chart_info" | grep '^version:' | cut -d':' -f2- | tr -d ' ')
+        description=$(echo "$chart_info" | grep '^description:' | cut -d':' -f2- | sed 's/^ *//')
+        
+        if [[ -n "$name" && -n "$version" ]]; then
+            cat >> $HTML_FILE <<EOL
         <tr>
             <td>$name</td>
             <td>$version</td>
             <td class="description">$description</td>
-            <td><a href="$url">Download</a></td>
+            <td><a href="$REPO_URL/$filename">Download</a></td>
         </tr>
 EOL
+        fi
     fi
 done
 
@@ -75,6 +79,5 @@ EOL
 git add .
 git commit -m "Update Helm repository and index.html"
 git push origin main
-
 echo "✅ Helm repository updated successfully!"
 echo "📦 Charts available at: $REPO_URL"
