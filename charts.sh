@@ -45,29 +45,40 @@ cat > $HTML_FILE <<EOL
         </tr>
 EOL
 
-# Read chart information directly from tgz files in docs directory
-for chart_file in $DOCS_DIR/*.tgz; do
-    if [ -f "$chart_file" ]; then
-        # Get filename without path
+# Check if any chart files exist
+charts_exist=$(find $DOCS_DIR -name "*.tgz" -print -quit)
+if [ -z "$charts_exist" ]; then
+    echo "No chart packages found in $DOCS_DIR"
+    cat >> $HTML_FILE <<EOL
+        <tr><td colspan="4">No charts available at this time.</td></tr>
+EOL
+else
+    # Process each chart file
+    find $DOCS_DIR -name "*.tgz" | while read -r chart_file; do
         filename=$(basename "$chart_file")
-        # Extract chart info using helm
-        chart_info=$(helm show chart "$chart_file" 2>/dev/null)
-        name=$(echo "$chart_info" | grep '^name:' | cut -d':' -f2- | tr -d ' ')
-        version=$(echo "$chart_info" | grep '^version:' | cut -d':' -f2- | tr -d ' ')
-        description=$(echo "$chart_info" | grep '^description:' | cut -d':' -f2- | sed 's/^ *//')
-        
-        if [[ -n "$name" && -n "$version" ]]; then
-            cat >> $HTML_FILE <<EOL
+        if [ -f "$chart_file" ]; then
+            # Extract chart info using helm inspect
+            chart_info=$(helm inspect chart "$chart_file" 2>/dev/null)
+            if [ $? -eq 0 ]; then
+                name=$(echo "$chart_info" | grep '^name:' | cut -d':' -f2- | tr -d ' ')
+                version=$(echo "$chart_info" | grep '^version:' | cut -d':' -f2- | tr -d ' ')
+                description=$(echo "$chart_info" | grep '^description:' | sed 's/^ *//')
+                download_url="$REPO_URL/docs/$filename"
+                
+                if [[ -n "$name" && -n "$version" ]]; then
+                    cat >> $HTML_FILE <<EOL
         <tr>
             <td>$name</td>
             <td>$version</td>
             <td class="description">$description</td>
-            <td><a href="$REPO_URL/$filename">Download</a></td>
+            <td><a href="$download_url">Download</a></td>
         </tr>
 EOL
+                fi
+            fi
         fi
-    fi
-done
+    done
+fi
 
 cat >> $HTML_FILE <<EOL
     </table>
