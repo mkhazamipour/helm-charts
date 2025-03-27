@@ -46,13 +46,15 @@ cat > $HTML_FILE <<EOL
 EOL
 
 # Read chart information from index.yaml and populate the table
-yq e '.entries | to_entries[] | .value[]' $DOCS_DIR/index.yaml | while read -r entry; do
-    name=$(echo "$entry" | yq e '.name' -)
-    version=$(echo "$entry" | yq e '.version' -)
-    description=$(echo "$entry" | yq e '.description' -)
-    url=$(echo "$entry" | yq e '.urls[0]' -)
+yq '.entries.* | .[]' $DOCS_DIR/index.yaml | while read -r entry; do
+    name=$(echo "$entry" | yq '.name')
+    version=$(echo "$entry" | yq '.version')
+    description=$(echo "$entry" | yq '.description // "No description available"')
+    url=$(echo "$entry" | yq '.urls[0]')
     
-    cat >> $HTML_FILE <<EOL
+    # Only add entry if we have valid name and version
+    if [[ -n "$name" && "$name" != "null" && -n "$version" && "$version" != "null" ]]; then
+        cat >> $HTML_FILE <<EOL
         <tr>
             <td>$name</td>
             <td>$version</td>
@@ -60,6 +62,7 @@ yq e '.entries | to_entries[] | .value[]' $DOCS_DIR/index.yaml | while read -r e
             <td><a href="$url">Download</a></td>
         </tr>
 EOL
+    fi
 done
 
 cat >> $HTML_FILE <<EOL
