@@ -24,7 +24,7 @@ echo "📦 Processing charts in $DOCS_DIR directory..."
 
 # Generate or update the Helm repository index (this will overwrite existing index.yaml)
 # The URL should point to where the files will be accessible via GitHub Pages
-helm repo index $DOCS_DIR --url "$REPO_URL/docs"
+helm repo index $DOCS_DIR --url "$REPO_URL"
 
 HTML_FILE="$DOCS_DIR/index.html"
 
@@ -86,7 +86,7 @@ else
                 name=$(echo "$chart_info" | grep '^name:' | cut -d':' -f2- | tr -d ' ')
                 version=$(echo "$chart_info" | grep '^version:' | cut -d':' -f2- | tr -d ' ')
                 description=$(echo "$chart_info" | grep '^description:' | sed 's/^ *//')
-                download_url="$REPO_URL/docs/$filename"
+                download_url="$REPO_URL/$filename"
                 
                 if [[ -n "$name" && -n "$version" ]]; then
                     # Create unique identifier for deduplication
