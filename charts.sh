@@ -6,10 +6,16 @@ DOCS_DIR="docs"
 # Create docs directory if it doesn't exist
 mkdir -p $DOCS_DIR
 
+# Clean up any nested docs directories to prevent duplicates
+if [ -d "$DOCS_DIR/docs" ]; then
+    echo "Removing nested docs directory to prevent duplicates..."
+    rm -rf "$DOCS_DIR/docs"
+fi
+
 # Copy all tgz files to docs directory
 find . -maxdepth 1 -name "*.tgz" -exec cp {} $DOCS_DIR/ \;
 
-# Generate or update the Helm repository index
+# Generate or update the Helm repository index (this will overwrite existing index.yaml)
 helm repo index $DOCS_DIR --url $REPO_URL
 
 HTML_FILE="$DOCS_DIR/index.html"
@@ -53,8 +59,11 @@ if [ -z "$charts_exist" ]; then
         <tr><td colspan="4">No charts available at this time.</td></tr>
 EOL
 else
-    # Process each chart file
-    find $DOCS_DIR -name "*.tgz" | while read -r chart_file; do
+    # Process each chart file (only in docs directory, not recursively)
+    # Use associative array to track unique chart name-version combinations
+    declare -A processed_charts
+    
+    find $DOCS_DIR -maxdepth 1 -name "*.tgz" | while read -r chart_file; do
         filename=$(basename "$chart_file")
         if [ -f "$chart_file" ]; then
             # Extract chart info using helm inspect
@@ -64,6 +73,9 @@ else
                 version=$(echo "$chart_info" | grep '^version:' | cut -d':' -f2- | tr -d ' ')
                 description=$(echo "$chart_info" | grep '^description:' | sed 's/^ *//')
                 download_url="$REPO_URL/docs/$filename"
+                
+                # Create unique key for chart name-version combination
+                chart_key="${name}-${version}"
                 
                 if [[ -n "$name" && -n "$version" ]]; then
                     cat >> $HTML_FILE <<EOL
