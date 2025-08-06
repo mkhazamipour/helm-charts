@@ -12,17 +12,20 @@ if [ -d "$DOCS_DIR/docs" ]; then
     rm -rf "$DOCS_DIR/docs"
 fi
 
-# Copy all tgz files to docs directory
+# Copy all tgz files to both root and docs directory for GitHub Pages compatibility
 find . -maxdepth 1 -name "*.tgz" -exec cp {} $DOCS_DIR/ \;
+find . -maxdepth 1 -name "*.tgz" -exec cp {} . \; 2>/dev/null || true
 
-# Also copy any existing tgz files from docs to root directory for GitHub Pages
+# Also copy existing tgz files from docs to root
 find $DOCS_DIR -maxdepth 1 -name "*.tgz" -exec cp {} . \;
 
-# Also process any existing tgz files in docs directory to ensure we don't miss any
-echo "Processing charts in $DOCS_DIR directory..."
+echo "Processing charts..."
 
-# Generate or update the Helm repository index (this will overwrite existing index.yaml)
+# Generate repository index in docs directory
 helm repo index $DOCS_DIR --url $REPO_URL
+
+# Also generate in root for compatibility
+helm repo index . --url $REPO_URL
 
 HTML_FILE="$DOCS_DIR/index.html"
 
@@ -58,16 +61,16 @@ cat > $HTML_FILE <<EOL
 EOL
 
 # Check if any chart files exist
-charts_exist=$(find $DOCS_DIR -maxdepth 1 -name "*.tgz" -print -quit)
+charts_exist=$(find . -maxdepth 1 -name "*.tgz" -print -quit)
 if [ -z "$charts_exist" ]; then
-    echo "No chart packages found in $DOCS_DIR"
+    echo "No chart packages found"
     cat >> $HTML_FILE <<EOL
         <tr><td colspan="4">No charts available at this time.</td></tr>
 EOL
 else
     echo "Found chart packages, processing..."
-    # Process each chart file (only in docs directory, not recursively)
-    find $DOCS_DIR -maxdepth 1 -name "*.tgz" | sort | while read -r chart_file; do
+    # Process each chart file from root directory to avoid duplicates
+    find . -maxdepth 1 -name "*.tgz" | sort | while read -r chart_file; do
         filename=$(basename "$chart_file")
         if [ -f "$chart_file" ]; then
             # Extract chart info using helm inspect
@@ -101,9 +104,15 @@ cat >> $HTML_FILE <<EOL
 </html>
 EOL
 
+# Copy the index.html to root as well for compatibility
+cp $HTML_FILE ./index.html
+
 # Git operations
 git add .
-git commit -m "Update Helm repository and index.html"
+git commit -m "Update Helm repository and index files"
 git push origin main
+
 echo "✅ Helm repository updated successfully!"
 echo "📦 Charts available at: $REPO_URL"
+echo ""
+echo "Files have been placed in both root and docs directories for maximum compatibility"

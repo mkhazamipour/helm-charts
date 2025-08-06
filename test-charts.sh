@@ -15,9 +15,6 @@ fi
 # Copy all tgz files to docs directory
 find . -maxdepth 1 -name "*.tgz" -exec cp {} $DOCS_DIR/ \;
 
-# Also copy any existing tgz files from docs to root directory for GitHub Pages
-find $DOCS_DIR -maxdepth 1 -name "*.tgz" -exec cp {} . \;
-
 # Also process any existing tgz files in docs directory to ensure we don't miss any
 echo "Processing charts in $DOCS_DIR directory..."
 
@@ -101,9 +98,11 @@ cat >> $HTML_FILE <<EOL
 </html>
 EOL
 
-# Git operations
-git add .
-git commit -m "Update Helm repository and index.html"
-git push origin main
-echo "✅ Helm repository updated successfully!"
-echo "📦 Charts available at: $REPO_URL"
+echo "✅ HTML file generated successfully!"
+echo "📦 Charts will be available at: $REPO_URL"
+echo ""
+echo "Generated download URLs:"
+find $DOCS_DIR -maxdepth 1 -name "*.tgz" | sort | while read -r chart_file; do
+    filename=$(basename "$chart_file")
+    echo "  $REPO_URL/$filename"
+done
