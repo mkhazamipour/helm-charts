@@ -3,7 +3,7 @@ entries:
   phpldapadmin:
   - apiVersion: v2
     appVersion: 2.1.3
-    created: "2025-08-06T23:01:06.365820491+02:00"
+    created: "2025-08-06T23:02:22.053628292+02:00"
     description: A Helm chart for Kubernetes
     digest: 6e6f3783177d5a074c2be9790bf2a4fec8b01f7a40703461341252939dc2d87f
     maintainers:
@@ -16,7 +16,7 @@ entries:
     version: 0.1.0
   - apiVersion: v2
     appVersion: 2.1.3
-    created: "2025-08-06T23:01:06.392352494+02:00"
+    created: "2025-08-06T23:02:22.078782616+02:00"
     description: A Helm chart for Kubernetes
     digest: 6e6f3783177d5a074c2be9790bf2a4fec8b01f7a40703461341252939dc2d87f
     maintainers:
@@ -30,7 +30,7 @@ entries:
   stackrox-central-services:
   - apiVersion: v2
     appVersion: 4.8.1
-    created: "2025-08-06T23:01:06.383612917+02:00"
+    created: "2025-08-06T23:02:22.070716081+02:00"
     description: Helm Chart for StackRox Central Service
     digest: bc2a77695b9d62140e021f95942b9dd13dc196eba3776b9953e4f200897f77f1
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -41,7 +41,7 @@ entries:
     version: 400.8.1
   - apiVersion: v2
     appVersion: 4.7.2
-    created: "2025-08-06T23:01:06.379927075+02:00"
+    created: "2025-08-06T23:02:22.067295931+02:00"
     description: Helm Chart for StackRox Central Service
     digest: f58885206c6efdc87907c0e87ae63347f5ed6246ab2f12202feda9fd352386db
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -52,7 +52,7 @@ entries:
     version: 400.7.2
   - apiVersion: v2
     appVersion: 4.7.2
-    created: "2025-08-06T23:01:06.405187163+02:00"
+    created: "2025-08-06T23:02:22.091743002+02:00"
     description: Helm Chart for StackRox Central Service
     digest: f58885206c6efdc87907c0e87ae63347f5ed6246ab2f12202feda9fd352386db
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -63,7 +63,7 @@ entries:
     version: 400.7.2
   - apiVersion: v2
     appVersion: 4.7.0
-    created: "2025-08-06T23:01:06.377496496+02:00"
+    created: "2025-08-06T23:02:22.06489374+02:00"
     description: Helm Chart for StackRox Central Service
     digest: a35282d5578042d44098209f313ce7f9ba88316d44243fd7d2385b2e8a7a6a8f
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -74,7 +74,7 @@ entries:
     version: 400.7.0
   - apiVersion: v2
     appVersion: 4.7.0
-    created: "2025-08-06T23:01:06.402818225+02:00"
+    created: "2025-08-06T23:02:22.089360923+02:00"
     description: Helm Chart for StackRox Central Service
     digest: a35282d5578042d44098209f313ce7f9ba88316d44243fd7d2385b2e8a7a6a8f
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -85,7 +85,7 @@ entries:
     version: 400.7.0
   - apiVersion: v2
     appVersion: 4.6.0
-    created: "2025-08-06T23:01:06.375011205+02:00"
+    created: "2025-08-06T23:02:22.062261604+02:00"
     description: Helm Chart for StackRox Central Service
     digest: 96fc89519a936c958fbea28b7ddef143a4d93dc898978a3364c15a2c8d01b5ae
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -96,7 +96,7 @@ entries:
     version: 400.6.0
   - apiVersion: v2
     appVersion: 4.6.0
-    created: "2025-08-06T23:01:06.400282877+02:00"
+    created: "2025-08-06T23:02:22.086993774+02:00"
     description: Helm Chart for StackRox Central Service
     digest: 96fc89519a936c958fbea28b7ddef143a4d93dc898978a3364c15a2c8d01b5ae
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -107,7 +107,7 @@ entries:
     version: 400.6.0
   - apiVersion: v2
     appVersion: 4.5.5
-    created: "2025-08-06T23:01:06.370963687+02:00"
+    created: "2025-08-06T23:02:22.058708443+02:00"
     description: Helm Chart for StackRox Central Service
     digest: 28cbf0b03e11c073cf4cfc07915565bae903ba8e936b5098d95fcd779d9d5bcc
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -118,7 +118,7 @@ entries:
     version: 400.5.5
   - apiVersion: v2
     appVersion: 4.5.5
-    created: "2025-08-06T23:01:06.397159147+02:00"
+    created: "2025-08-06T23:02:22.084615012+02:00"
     description: Helm Chart for StackRox Central Service
     digest: 28cbf0b03e11c073cf4cfc07915565bae903ba8e936b5098d95fcd779d9d5bcc
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -129,7 +129,7 @@ entries:
     version: 400.5.5
   - apiVersion: v2
     appVersion: 4.5.4
-    created: "2025-08-06T23:01:06.368587717+02:00"
+    created: "2025-08-06T23:02:22.056026855+02:00"
     description: Helm Chart for StackRox Central Service
     digest: f07bb2fb25600c6e3d30b4bcc1d7781795c548acb425773cf9f56483723acc39
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -140,7 +140,7 @@ entries:
     version: 400.5.4
   - apiVersion: v2
     appVersion: 4.5.4
-    created: "2025-08-06T23:01:06.394827442+02:00"
+    created: "2025-08-06T23:02:22.081071286+02:00"
     description: Helm Chart for StackRox Central Service
     digest: f07bb2fb25600c6e3d30b4bcc1d7781795c548acb425773cf9f56483723acc39
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -152,7 +152,7 @@ entries:
   stackrox-secured-cluster-services:
   - apiVersion: v2
     appVersion: 4.8.1
-    created: "2025-08-06T23:01:06.391343898+02:00"
+    created: "2025-08-06T23:02:22.078300125+02:00"
     description: Helm Chart for StackRox Secured Clusters
     digest: 99207910fecb03a0b193e627bff855fc6b23e7c566077da9833307b5269f3b95
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -163,7 +163,7 @@ entries:
     version: 400.8.1
   - apiVersion: v2
     appVersion: 4.7.2
-    created: "2025-08-06T23:01:06.388442944+02:00"
+    created: "2025-08-06T23:02:22.075284712+02:00"
     description: Helm Chart for StackRox Secured Clusters
     digest: f0a6204a479ad78ef418f823b84c21ed024af62e52b573f532de81d6f960eb78
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -174,7 +174,7 @@ entries:
     version: 400.7.2
   - apiVersion: v2
     appVersion: 4.7.2
-    created: "2025-08-06T23:01:06.410373385+02:00"
+    created: "2025-08-06T23:02:22.097967073+02:00"
     description: Helm Chart for StackRox Secured Clusters
     digest: f0a6204a479ad78ef418f823b84c21ed024af62e52b573f532de81d6f960eb78
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -185,7 +185,7 @@ entries:
     version: 400.7.2
   - apiVersion: v2
     appVersion: 4.7.0
-    created: "2025-08-06T23:01:06.386273822+02:00"
+    created: "2025-08-06T23:02:22.073086755+02:00"
     description: Helm Chart for StackRox Secured Clusters
     digest: 4ace2cff36b7d3c77a9cf8d2f6c354fa754c1b109799d1fab71da8cbb0abe153
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -196,7 +196,7 @@ entries:
     version: 400.7.0
   - apiVersion: v2
     appVersion: 4.7.0
-    created: "2025-08-06T23:01:06.408188956+02:00"
+    created: "2025-08-06T23:02:22.095716036+02:00"
     description: Helm Chart for StackRox Secured Clusters
     digest: 4ace2cff36b7d3c77a9cf8d2f6c354fa754c1b109799d1fab71da8cbb0abe153
     icon: https://raw.githubusercontent.com/stackrox/stackrox/master/image/templates/helm/shared/assets/StackRox_icon.png
@@ -205,4 +205,4 @@ entries:
     urls:
     - https://mkhazamipour.github.io/helm-charts/docs/stackrox-secured-cluster-services-400.7.0.tgz
     version: 400.7.0
-generated: "2025-08-06T23:01:06.364884396+02:00"
+generated: "2025-08-06T23:02:22.052593539+02:00"
