@@ -3,6 +3,8 @@
 REPO_URL="https://mkhazamipour.github.io/helm-charts"
 DOCS_DIR="docs"
 
+echo "🔄 Processing Helm Charts Repository..."
+
 # Create docs directory if it doesn't exist
 mkdir -p $DOCS_DIR
 
@@ -12,21 +14,21 @@ if [ -d "$DOCS_DIR/docs" ]; then
     rm -rf "$DOCS_DIR/docs"
 fi
 
-# Copy all tgz files to docs directory
-find . -maxdepth 1 -name "*.tgz" -exec cp {} $DOCS_DIR/ \;
+# Remove any .tgz files from root directory (we only want them in docs)
+find . -maxdepth 1 -name "*.tgz" -delete 2>/dev/null || true
 
-# Also copy any existing tgz files from docs to root directory for GitHub Pages
-find $DOCS_DIR -maxdepth 1 -name "*.tgz" -exec cp {} . \;
+# Copy any new .tgz files from root to docs directory (if any)
+find . -maxdepth 1 -name "*.tgz" -exec cp {} $DOCS_DIR/ \; 2>/dev/null || true
 
-# Also process any existing tgz files in docs directory to ensure we don't miss any
-echo "Processing charts in $DOCS_DIR directory..."
+echo "📦 Processing charts in $DOCS_DIR directory..."
 
 # Generate or update the Helm repository index (this will overwrite existing index.yaml)
-helm repo index $DOCS_DIR --url $REPO_URL
+# The URL should point to where the files will be accessible via GitHub Pages
+helm repo index $DOCS_DIR --url "$REPO_URL/docs"
 
 HTML_FILE="$DOCS_DIR/index.html"
 
-# Create index.html
+# Create index.html (completely regenerate to avoid duplicates)
 cat > $HTML_FILE <<EOL
 <!DOCTYPE html>
 <html lang="en">
@@ -66,6 +68,10 @@ if [ -z "$charts_exist" ]; then
 EOL
 else
     echo "Found chart packages, processing..."
+    
+    # Create a temporary file to store unique chart entries
+    temp_file=$(mktemp)
+    
     # Process each chart file (only in docs directory, not recursively)
     find $DOCS_DIR -maxdepth 1 -name "*.tgz" | sort | while read -r chart_file; do
         filename=$(basename "$chart_file")
@@ -76,12 +82,21 @@ else
                 name=$(echo "$chart_info" | grep '^name:' | cut -d':' -f2- | tr -d ' ')
                 version=$(echo "$chart_info" | grep '^version:' | cut -d':' -f2- | tr -d ' ')
                 description=$(echo "$chart_info" | grep '^description:' | sed 's/^ *//')
-                download_url="$REPO_URL/$filename"
-                
-                echo "Processing: $name-$version -> $download_url"
+                download_url="$REPO_URL/docs/$filename"
                 
                 if [[ -n "$name" && -n "$version" ]]; then
-                    cat >> $HTML_FILE <<EOL
+                    echo "  📋 $name-$version"
+                    # Create unique identifier for deduplication
+                    chart_id="${name}-${version}"
+                    echo "$chart_id|$name|$version|$description|$download_url" >> $temp_file
+                fi
+            fi
+        fi
+    done
+    
+    # Remove duplicates and sort by name and version
+    sort -t'|' -k1,1 -u $temp_file | while IFS='|' read -r chart_id name version description download_url; do
+        cat >> $HTML_FILE <<EOL
         <tr>
             <td>$name</td>
             <td>$version</td>
@@ -89,10 +104,10 @@ else
             <td><a href="$download_url">Download</a></td>
         </tr>
 EOL
-                fi
-            fi
-        fi
     done
+    
+    # Clean up temporary file
+    rm -f $temp_file
 fi
 
 cat >> $HTML_FILE <<EOL
@@ -101,9 +116,34 @@ cat >> $HTML_FILE <<EOL
 </html>
 EOL
 
+# Create a simple index.html in root that redirects to docs
+cat > index.html <<EOL
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=docs/">
+    <title>Helm Charts Repository</title>
+</head>
+<body>
+    <p>Redirecting to <a href="docs/">Helm Charts Repository</a>...</p>
+</body>
+</html>
+EOL
+
+echo "✅ Generated index files successfully!"
+echo "📁 Charts are located in: $DOCS_DIR/"
+echo "🌐 Repository URL: $REPO_URL"
+echo ""
+
+# Count charts
+chart_count=$(find $DOCS_DIR -maxdepth 1 -name "*.tgz" | wc -l)
+echo "📊 Total charts processed: $chart_count"
+
 # Git operations
 git add .
-git commit -m "Update Helm repository and index.html"
+git commit -m "Update Helm repository and index files"
 git push origin main
+
 echo "✅ Helm repository updated successfully!"
 echo "📦 Charts available at: $REPO_URL"
