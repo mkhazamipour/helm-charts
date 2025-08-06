@@ -69,11 +69,15 @@ EOL
 else
     echo "Found chart packages, processing..."
     
-    # Create a temporary file to store unique chart entries
-    temp_file=$(mktemp)
+    # Store chart data in arrays to avoid subshell issues
+    declare -a chart_names
+    declare -a chart_versions  
+    declare -a chart_descriptions
+    declare -a chart_urls
+    declare -A processed_charts
     
     # Process each chart file (only in docs directory, not recursively)
-    find $DOCS_DIR -maxdepth 1 -name "*.tgz" | sort | while read -r chart_file; do
+    while IFS= read -r -d '' chart_file; do
         filename=$(basename "$chart_file")
         if [ -f "$chart_file" ]; then
             # Extract chart info using helm inspect
@@ -85,29 +89,34 @@ else
                 download_url="$REPO_URL/docs/$filename"
                 
                 if [[ -n "$name" && -n "$version" ]]; then
-                    echo "  📋 $name-$version"
                     # Create unique identifier for deduplication
                     chart_id="${name}-${version}"
-                    echo "$chart_id|$name|$version|$description|$download_url" >> $temp_file
+                    
+                    # Only add if not already processed
+                    if [[ -z "${processed_charts[$chart_id]}" ]]; then
+                        echo "  📋 $name-$version"
+                        chart_names+=("$name")
+                        chart_versions+=("$version")
+                        chart_descriptions+=("$description")
+                        chart_urls+=("$download_url")
+                        processed_charts[$chart_id]=1
+                    fi
                 fi
             fi
         fi
-    done
+    done < <(find $DOCS_DIR -maxdepth 1 -name "*.tgz" -print0 | sort -z)
     
-    # Remove duplicates and sort by name and version
-    sort -t'|' -k1,1 -u $temp_file | while IFS='|' read -r chart_id name version description download_url; do
+    # Generate HTML rows
+    for i in "${!chart_names[@]}"; do
         cat >> $HTML_FILE <<EOL
         <tr>
-            <td>$name</td>
-            <td>$version</td>
-            <td class="description">$description</td>
-            <td><a href="$download_url">Download</a></td>
+            <td>${chart_names[$i]}</td>
+            <td>${chart_versions[$i]}</td>
+            <td class="description">${chart_descriptions[$i]}</td>
+            <td><a href="${chart_urls[$i]}">Download</a></td>
         </tr>
 EOL
     done
-    
-    # Clean up temporary file
-    rm -f $temp_file
 fi
 
 cat >> $HTML_FILE <<EOL
