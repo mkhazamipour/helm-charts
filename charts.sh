@@ -2,6 +2,9 @@
 
 REPO_URL="https://mkhazamipour.github.io/helm-charts"
 DOCS_DIR="docs"
+GIT_SSH_KEY_PATH="${GIT_SSH_KEY_PATH:-$HOME/.ssh/id_rsa}"
+GIT_SSH_REMOTE="${GIT_SSH_REMOTE:-git@github.com:mkhazamipour/helm-charts.git}"
+GIT_SSH_OPTS="-i \"$GIT_SSH_KEY_PATH\" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
 
 echo "🔄 Processing Helm Charts Repository..."
 
@@ -150,6 +153,14 @@ chart_count=$(find $DOCS_DIR -maxdepth 1 -name "*.tgz" | wc -l)
 echo "📊 Total charts processed: $chart_count"
 
 # Git operations
+if [ ! -f "$GIT_SSH_KEY_PATH" ]; then
+    echo "SSH key not found at $GIT_SSH_KEY_PATH"
+    exit 1
+fi
+
+git remote set-url --push origin "$GIT_SSH_REMOTE"
+export GIT_SSH_COMMAND="ssh $GIT_SSH_OPTS"
+
 git add .
 git commit -m "Update Helm repository and index files"
 git push origin main
