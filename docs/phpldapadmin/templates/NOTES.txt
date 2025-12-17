@@ -1,0 +1,73 @@
+🚀 phpLDAPadmin has been successfully deployed!
+
+📋 Release Information:
+   Release Name: {{ .Release.Name }}
+   Namespace: {{ .Release.Namespace }}
+   Chart Version: {{ .Chart.Version }}
+   App Version: {{ .Chart.AppVersion }}
+
+🔧 Configuration:
+   LDAP Host: {{ .Values.env.ldapHost }}
+   LDAP Base DN: {{ .Values.env.ldapBaseDn }}
+   LDAP Username: {{ .Values.env.ldapUsername }}
+   {{- if .Values.secret.existingSecret }}
+   LDAP Password: Retrieved from secret '{{ .Values.secret.existingSecret }}'
+   {{- else }}
+   ⚠️  LDAP Password: No secret configured - please set secret.existingSecret
+   {{- end }}
+
+🌐 Access Information:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  {{- range .paths }}
+   External URL: http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+   Get the application URL by running:
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "phpldapadmin.fullname" . }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo "Access phpLDAPadmin at: http://$NODE_IP:$NODE_PORT"
+{{- else if contains "LoadBalancer" .Values.service.type }}
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+   You can watch its status by running:
+   kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "phpldapadmin.fullname" . }}
+   
+   Once available, get the URL:
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "phpldapadmin.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+   echo "Access phpLDAPadmin at: http://$SERVICE_IP:{{ .Values.service.port }}"
+{{- else if contains "ClusterIP" .Values.service.type }}
+   To access phpLDAPadmin from outside the cluster, run:
+   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "phpldapadmin.fullname" . }} 8080:{{ .Values.service.port }}
+   
+   Then access phpLDAPadmin at: http://127.0.0.1:8080
+{{- end }}
+
+📊 Monitoring:
+   Check deployment status:
+   kubectl get deployment --namespace {{ .Release.Namespace }} {{ include "phpldapadmin.fullname" . }}
+   
+   View pod logs:
+   kubectl logs --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "phpldapadmin.name" . }} -f
+
+🔍 Troubleshooting:
+   Check pod status:
+   kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "phpldapadmin.name" . }}
+   
+   Describe deployment:
+   kubectl describe deployment --namespace {{ .Release.Namespace }} {{ include "phpldapadmin.fullname" . }}
+
+{{- if not .Values.secret.existingSecret }}
+
+⚠️  IMPORTANT: No LDAP password secret is configured!
+   Create a secret with your LDAP password:
+   kubectl create secret generic my-ldap-secret \
+     --from-literal={{ .Values.secret.ldapPasswordKey }}="YourLDAPPassword" \
+     --namespace {{ .Release.Namespace }}
+   
+   Then upgrade the release:
+   helm upgrade {{ .Release.Name }} . --set secret.existingSecret=my-ldap-secret
+{{- end }}
+
+📚 Documentation: https://github.com/your-repo/phpldapadmin-chart
+💬 Maintainer: Morteza Khazamiour <me@morteza.dev>

@@ -1,0 +1,9 @@
+apiVersion: v2
+appVersion: 2.3.6
+description: A Helm chart for Kubernetes
+maintainers:
+- email: me@morteza.dev
+  name: Morteza Khazamiour
+name: phpldapadmin
+type: application
+version: 0.1.1

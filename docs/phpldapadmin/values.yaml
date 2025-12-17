@@ -1,0 +1,113 @@
+# Default values for phpldapadmin.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: phpldapadmin/phpldapadmin
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "2.3.6"
+
+# Environment variables for phpLDAPadmin configuration
+env:
+  # Application configuration
+  appUrl: "http://phpldapadmin.openldap.svc.cluster.local:8080"
+  
+  # LDAP server configuration
+  ldapHost: "openldap.openldap.svc.cluster.local"  # Change this to your LDAP server's hostname or service name
+  # This should match the service name of your OpenLDAP server in the same namespace
+  # If your OpenLDAP server is in a different namespace, use the full service name like: openldap.openldap.svc.cluster.local
+  # If you are using a different LDAP server, change the ldapHost accordingly
+  # This is the base DN for your LDAP directory
+  ldapBaseDn: "dc=example,dc=org"
+  ldapUsername: "cn=admin,dc=example,dc=org"
+  ldapLoginAttr: "cn"
+  ldapPort: "389"
+  ldapName: "OpenLDAP Server"
+
+# Secret configuration for LDAP password
+secret:
+  # Name of the existing secret containing the LDAP password
+  existingSecret: ""
+  # Key in the secret that contains the LDAP password
+  ldapPasswordKey: "ldap-password"
+
+
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 8080
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+# Resource limits and requests
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# Pod annotations
+podAnnotations: {}
+
+# Pod labels
+podLabels: {}
+
+# Pod security context
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# Container security context
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Image pull secrets
+imagePullSecrets: []
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# Volume mounts
+volumeMounts: []
+
+# Volumes
+volumes: []

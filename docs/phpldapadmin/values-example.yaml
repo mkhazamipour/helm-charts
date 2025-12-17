@@ -1,0 +1,74 @@
+# Example values for phpldapadmin chart with existing secret
+# This is a YAML-formatted file.
+
+# This will set the replicaset count
+replicaCount: 1
+
+# Container image configuration
+image:
+  repository: phpldapadmin/phpldapadmin
+  pullPolicy: IfNotPresent
+  tag: "2.1.3"
+
+# Environment variables for phpLDAPadmin configuration
+env:
+  # Application configuration
+  appUrl: "http://phpldapadmin.openldap.svc.cluster.local:8080"
+  
+  # LDAP server configuration
+  ldapHost: "openldap.openldap.svc.cluster.local"  # Change this to your LDAP server's hostname or service name
+  ldapBaseDn: "dc=example,dc=org"
+  ldapUsername: "cn=admin,dc=example,dc=org"
+  ldapLoginAttr: "cn"
+  ldapPort: "389"
+  ldapName: "OpenLDAP Server"
+
+# Secret configuration for LDAP password
+# Set this to the name of your existing secret that contains the LDAP password
+secret:
+  # Name of the existing secret containing the LDAP password
+  existingSecret: "my-ldap-secret"  # Change this to your secret name
+  # Key in the secret that contains the LDAP password
+  ldapPasswordKey: "ldap-password"  # Change this to your secret key if different
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 8080
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: phpldapadmin.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+# Resource configuration (optional)
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Pod configuration
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+# Node configuration
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Volume configuration
+volumeMounts: []
+volumes: []
+imagePullSecrets: []
